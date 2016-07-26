@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var CoffeeScript, CookieParser, Generate, about, build, buildAutoImport, buildProduction, capitalizeFirstLetter, clean, colors, compileFile, create, deleteFolderRecursive, dirCheck, fs, getDirectories, indent, launch, makeID, path, program, prompt, reorderFiles, restify, uglify, walk, watch, watcher;
 
 prompt = require('prompt');
