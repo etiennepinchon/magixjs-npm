@@ -7,35 +7,30 @@ A NEW WAY TO CREATE ANYTHING.
 #############################################
 # Commands
 
-# ABOUT
-## orbe about
+# orbe about
 
 * About Orbe.
 
-# CREATE
-## orbe create [type]
+# orbe create [type]
 
 * Allow you to create a project.
 * Type: [app, playground]
 
 ex: orbe create app
 
-# BUILD
-## orbe build [project dir] [env]
+# orbe build [project dir] [env]
 
 * Build your project.
 
-## orbe build production: 
+## orbe build production
 
 * Optimize your project for a production environement (merge files, minify..).
 
-# CLEAN
-## orbe clean [project dir]
+# orbe clean [project dir]
 
 * Clear the build of a project.
 
-# WATCH
-## orbe watch [project dir]
+# orbe watch [project dir]
 
 * Observe change on a project and compile on the fly.
 
@@ -48,9 +43,9 @@ ex: orbe watch
 
 > orbe create app
 
-> Orbe: name:  demo
+> > Orbe: name:  demo
 
-> Orbe: Orb created successfully.
+> > Orbe: Orb created successfully.
 
 > cd orb-demo
 
@@ -87,7 +82,8 @@ ex: orbe watch
 To import classes manually, add a '!' at the very beggining of you file.
 Then:
 > Import 'MyFirstView', ->
-> 	say 'imported'
+
+> > say 'imported'
 
 ## In case you are wondering, 'say' is the print method, short and cool ;)
 
