@@ -18,6 +18,10 @@ A NEW WAY TO CREATE ANYTHING.
 
 ex: orbe create app
 
+# orbe launch [dir] [port]
+
+* Launch a local server to help you code an orb project.
+
 # orbe build [project dir] [env]
 
 * Build your project.
@@ -49,7 +53,7 @@ ex: orbe watch
 
 > cd orb-demo
 
-> orbe watch
+> orbe launch
 
 ## Create production version of your project
 ## (Will create copy of your project that will be minified and optimized)
@@ -83,7 +87,7 @@ To import classes manually, add a '!' at the very beggining of you file.
 Then:
 > Import 'MyFirstView', ->
 
-> > say 'imported'
+> say 'imported'
 
 ## In case you are wondering, 'say' is the print method, short and cool ;)
 
