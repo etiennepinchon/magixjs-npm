@@ -13,7 +13,7 @@
     "orbe.io"
   ],
   "author": "Etienne Pinchon <support@orbe.io> (http://orbe.io)",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "coffee-script": "^1.10.0",
     "colors": "^1.1.2",
@@ -28,5 +28,9 @@
     "uglify-js": "^2.6.4",
     "walk": "^2.3.9",
     "watch": "^0.19.1"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/orbeio/terminal"
   }
 }
