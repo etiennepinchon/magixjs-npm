@@ -143,7 +143,7 @@ create = (type) ->
 				appCS = Generate.PlaygroundContentCS()
 			
 			done = ->
-				console.log 'Orbe: Orb created successfully.'.green
+				console.log 'Orbe: '+type+' created successfully.'.green
 				console.log 'Orbe: Path: ' + process.cwd() + '/orb-' + result.name
 
 			createJSON = ->
@@ -255,7 +255,7 @@ launch = (dir, server_port)->
 	server.start = (message)->
 		server.listen server.__port, 'localhost', ->
 			if message
-				console.log(('Orbe: Orb launched! Running! Adress ' + server.url).green)
+				console.log(('Orbe: Orb launched! Running! Address ' + server.url).green)
 	
 	server.start(yes)
 	if fs.existsSync(dir + '/documents')

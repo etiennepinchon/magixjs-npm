@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 var CoffeeScript, CookieParser, Generate, about, build, buildAutoImport, buildProduction, capitalizeFirstLetter, clean, colors, compileFile, create, deleteFolderRecursive, dirCheck, fs, getDirectories, indent, launch, makeID, path, program, prompt, reorderFiles, restify, uglify, walk, watch, watcher;
 
 prompt = require('prompt');
@@ -169,7 +168,7 @@ create = function(type) {
         appCS = Generate.PlaygroundContentCS();
       }
       done = function() {
-        console.log('Orbe: Orb created successfully.'.green);
+        console.log('Orbe: ' + type + ' created successfully.'.green);
         return console.log('Orbe: Path: ' + process.cwd() + '/orb-' + result.name);
       };
       createJSON = function() {
@@ -297,7 +296,7 @@ launch = function(dir, server_port) {
   server.start = function(message) {
     return server.listen(server.__port, 'localhost', function() {
       if (message) {
-        return console.log(('Orbe: Orb launched! Running! Adress ' + server.url).green);
+        return console.log(('Orbe: Orb launched! Running! Address ' + server.url).green);
       }
     });
   };
