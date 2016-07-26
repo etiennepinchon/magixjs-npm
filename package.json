@@ -1,6 +1,6 @@
 {
   "name": "orbe",
-  "version": "1.0.1",
+  "version": "1.0.11",
   "description": "Command-line manager for orbe.io.",
   "main": "index.js",
   "bin": {

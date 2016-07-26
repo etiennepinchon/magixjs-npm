@@ -4,48 +4,45 @@ A NEW WAY TO CREATE ANYTHING.
 
 [orbe.io](https://orbe.io)
 
-#############################################
 # Install
 
-> npm install orbe
+> npm install orbe -g
 
-#############################################
 # Commands
 
-# orbe about
+## orbe about
 
 * About Orbe.
 
-# orbe create [type]
+## orbe create [type]
 
 * Allow you to create a project.
 * Type: [app, playground]
 
 ex: orbe create app
 
-# orbe launch [dir] [port]
+## orbe launch [dir] [port]
 
 * Launch a local server to help you code an orb project.
 
-# orbe build [project dir] [env]
+## orbe build [project dir] [env]
 
 * Build your project.
+* orbe build production
+** Optimize your project for a production environement (merge files, minify..).
 
-## orbe build production
-
-* Optimize your project for a production environement (merge files, minify..).
-
-# orbe clean [project dir]
+## orbe clean [project dir]
 
 * Clear the build of a project.
 
-# orbe watch [project dir]
+## orbe watch [project dir]
 
 * Observe change on a project and compile on the fly.
+* Note: when doing a 'orbe launch' you do not need to do an 'orbe watch'
 
 ex: orbe watch
 
-#############################################
+
 # Example
 
 ## Create your first project:
@@ -67,7 +64,6 @@ ex: orbe watch
 
 > orbe build production
 
-#############################################
 # Stuff to know about orbe projects
 
 * You code using COFFEESCRIPT.
@@ -98,14 +94,12 @@ Then:
 
 > say 'something :P'
 
-#############################################
 # Documentation / help
 
 To find help visit:
 [Orbe Documentation](https://orbe.io/learn)
 [Twitter](https://twitter.com/orbeio)
 
-#############################################
 # About
 Created by Etienne Pinchon (@etiennepinchon)
 [Twitter](https://twitter.com/etiennepinchon)
