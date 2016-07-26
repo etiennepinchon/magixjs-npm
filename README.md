@@ -7,7 +7,7 @@ A NEW WAY TO CREATE ANYTHING.
 #############################################
 # Install
 
-> npm install orb
+> npm install orbe
 
 #############################################
 # Commands
