@@ -5,6 +5,11 @@ A NEW WAY TO CREATE ANYTHING.
 [orbe.io](https://orbe.io)
 
 #############################################
+# Install
+
+> npm install orb
+
+#############################################
 # Commands
 
 # orbe about
