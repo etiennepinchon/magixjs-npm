@@ -357,7 +357,7 @@ watch = (dir, server) ->
 
 		#else if filename and filename.index#filename isnt '.DS_Store'
 
-		if server
+		if server and server.close
 			server.close()
 			server.start(no)
 
