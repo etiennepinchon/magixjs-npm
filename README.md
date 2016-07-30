@@ -97,10 +97,14 @@ Then:
 # Documentation / help
 
 To find help visit:
+
 [Orbe Documentation](https://orbe.io/learn)
+
 [Twitter](https://twitter.com/orbeio)
 
 # About
 Created by Etienne Pinchon (@etiennepinchon)
+
 [Twitter](https://twitter.com/etiennepinchon)
+
 ©2016

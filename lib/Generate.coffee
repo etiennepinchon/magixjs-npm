@@ -45,6 +45,9 @@ Generate.catalog = (documents) ->
 	collection = ''
 	i = 0
 	for item in documents
+
+		# NOTE: no need to check for item type. Done previously.
+
 		full_path = item.split('/')
 		file_name = full_path[full_path.length-1]
 		path = item.replace(file_name, '')
