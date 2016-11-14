@@ -8,54 +8,54 @@ Combined with Coffeescript, MagiX get ride of HTML/CSS and Javascript allowing y
 
 # Install
 
-> npm install magixjs -g
+> npm install -g magix
 
 # Commands
 
-## magixjs about
+## magix about
 
 * About Magix.
 
-## magixjs create [type]
+## magix create [type]
 
 * Allow you to create a project.
 * Type: [app, playground]
 
-ex: magixjs create app
+ex: magix create app
 
-## magixjs launch [dir] [port]
+## magix launch [dir] [port]
 
 * Launch a local server to help you code an orb project.
 
-## magixjs build [project dir] [env]
+## magix build [project dir] [env]
 
 * Build your project.
 * magixjs build production
 ** Optimize your project for a production environement (merge files, minify..).
 
-## magixjs clean [project dir]
+## magix clean [project dir]
 
 * Clear the build of a project.
 
-## magixjs watch [project dir]
+## magix watch [project dir]
 
 * Observe change on a project and compile on the fly.
 * Note: when doing a 'magix launch' you do not need to do an 'magix watch'
 
-ex: magixjs watch
+ex: magix watch
 
 
 # Example
 
 ## Create your first project:
 
-> magixjs create demo
+> magix create demo
 
 > > Magix: Project created successfully.
 
 > cd orb-demo
 
-> magixjs launch
+> magix launch
 
 ## Create production version of your project
 ## (Will create copy of your project that will be minified and optimized)
