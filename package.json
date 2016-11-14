@@ -1,6 +1,6 @@
 {
   "name": "magixjs",
-  "version": "1.0.13",
+  "version": "1.0.131",
   "description": "Command-line manager for magixjs.com.",
   "main": "index.js",
   "bin": {
