@@ -435,7 +435,7 @@ compileFile = (name, dir, next, notification)->
 
 				# We indent the code
 				contentCopy = indent(contentCopy, 2)
-				classes 	= ['Page', 'View', 'Text', 'Button', 'Link', 'CheckBox', 'Dropdown', 'RadioButton', 'Image', 'List', 'ListItem', 'TextField', 'TextView', 'FileField', 'Player', 'Slider', 'ProgressBar', 'Canvas', 'WebView']
+				classes 	= ['Page', 'View', 'Text', 'Button', 'Link', 'CheckBox', 'Dropdown', 'RadioButton', 'Image', 'List', 'ListItem', 'TextInput', 'SpeechRecognition', 'Say', 'FileInput', 'Player', 'Slider', 'ProgressBar', 'Canvas', 'WebView']
 
 				# If extend framework, inject class with init
 				if classes.indexOf(file.type) > -1

@@ -8,7 +8,7 @@ Combined with Coffeescript, MagiX get ride of HTML/CSS and Javascript allowing y
 
 # Install
 
-> npm install -g magix
+> npm install -g magixjs
 
 # Commands
 
@@ -30,7 +30,7 @@ ex: magix create app
 ## magix build [project dir] [env]
 
 * Build your project.
-* magixjs build production
+* magix build production
 ** Optimize your project for a production environement (merge files, minify..).
 
 ## magix clean [project dir]
@@ -60,9 +60,9 @@ ex: magix watch
 ## Create production version of your project
 ## (Will create copy of your project that will be minified and optimized)
 
-> magixjs clean
+> magix clean
 
-> magixjs build production
+> magix build production
 
 # About magix projects
 

@@ -491,7 +491,7 @@ compileFile = function(name, dir, next, notification) {
         }
         addClass = true;
         contentCopy = indent(contentCopy, 2);
-        classes = ['Page', 'View', 'Text', 'Button', 'Link', 'CheckBox', 'Dropdown', 'RadioButton', 'Image', 'List', 'ListItem', 'TextField', 'TextView', 'FileField', 'Player', 'Slider', 'ProgressBar', 'Canvas', 'WebView'];
+        classes = ['Page', 'View', 'Text', 'Button', 'Link', 'CheckBox', 'Dropdown', 'RadioButton', 'Image', 'List', 'ListItem', 'TextInput', 'SpeechRecognition', 'Say', 'FileInput', 'Player', 'Slider', 'ProgressBar', 'Canvas', 'WebView'];
         if (classes.indexOf(file.type) > -1) {
           classFile = 'class ' + name + ' extends ' + file.type + '\n\t';
           if (file.kind) {
