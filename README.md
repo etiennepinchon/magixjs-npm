@@ -12,37 +12,37 @@ Combined with Coffeescript, MagiX get ride of HTML/CSS and Javascript allowing y
 
 # Commands
 
-## magix about
+## magixjs about
 
 * About Magix.
 
-## magix create [type]
+## magixjs create [type]
 
 * Allow you to create a project.
 * Type: [app, playground]
 
-ex: magix create app
+ex: magixjs create app
 
-## magix launch [dir] [port]
+## magixjs launch [dir] [port]
 
 * Launch a local server to help you code an orb project.
 
-## magix build [project dir] [env]
+## magixjs build [project dir] [env]
 
 * Build your project.
-* magix build production
+* magixjs build production
 ** Optimize your project for a production environement (merge files, minify..).
 
-## magix clean [project dir]
+## magixjs clean [project dir]
 
 * Clear the build of a project.
 
-## magix watch [project dir]
+## magixjs watch [project dir]
 
 * Observe change on a project and compile on the fly.
 * Note: when doing a 'magix launch' you do not need to do an 'magix watch'
 
-ex: magix watch
+ex: magixjs watch
 
 
 # Example
