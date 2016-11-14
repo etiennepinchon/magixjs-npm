@@ -181,7 +181,7 @@ create = (name) ->
 			
 	appNameCS = '/App.coffee'
 	appJS = Generate.appRunJS indent(appJS, 1)
-		
+	
 	# Write HTML content
 	fs.writeFile dir_project + '/index.html', htmlContent, (err) ->
 		return console.log(err) if err

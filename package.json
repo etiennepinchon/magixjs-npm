@@ -1,5 +1,5 @@
 {
-  "name": "magiX",
+  "name": "magixjs",
   "version": "1.0",
   "description": "Command-line manager for magixjs.com.",
   "main": "index.js",

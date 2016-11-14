@@ -8,7 +8,7 @@ Combined with Coffeescript, MagiX get ride of HTML/CSS and Javascript allowing y
 
 # Install
 
-> npm install magix -g
+> npm install magixjs -g
 
 # Commands
 
@@ -49,20 +49,20 @@ ex: magix watch
 
 ## Create your first project:
 
-> magix create demo
+> magixjs create demo
 
 > > Magix: Project created successfully.
 
 > cd orb-demo
 
-> magix launch
+> magixjs launch
 
 ## Create production version of your project
 ## (Will create copy of your project that will be minified and optimized)
 
-> magix clean
+> magixjs clean
 
-> magix build production
+> magixjs build production
 
 # About magix projects
 
@@ -88,11 +88,11 @@ To import classes manually, add a '!' at the very beggining of you file.
 Then:
 > Import 'MyFirstView', ->
 
-> say 'imported'
+> log 'imported'
 
-## In case you are wondering, 'say' is the print method, short and cool ;)
+## In case you are wondering, 'log' is the print method, short and cool ;)
 
-> say 'something :P'
+> log 'something :P'
 
 # Documentation / help
 
