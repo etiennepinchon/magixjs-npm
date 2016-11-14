@@ -22,7 +22,7 @@ Generate.HTML = (name, description, keywords, app_icon) ->
 
 	html +='\n\t\
 		<!-- SCRIPT -->\n\t\
-		<script type="text/javascript" src="https://magixjs.com/framework/1.0/magix.loader.min.js"></script>\n\t\
+		<script type="text/javascript" src="https://s3.amazonaws.com/data.magixjs.com/framework/1.0/magix.loader.min.js"></script>\n\t\
 		<script type="text/javascript" src="/build/catalog.js"></script>\n\t\
 		<script type="text/javascript" src="/build/index.js"></script>\n\
 	</head>\n\
