@@ -1,18 +1,18 @@
 {
-  "name": "orbe",
-  "version": "1.0.111",
-  "description": "Command-line manager for orbe.io.",
+  "name": "magiX",
+  "version": "1.0",
+  "description": "Command-line manager for magixjs.com.",
   "main": "index.js",
   "bin": {
-    "orbe": "index.js"
+    "magix": "index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "orbe.io"
+    "magixjs.com"
   ],
-  "author": "Etienne Pinchon <support@orbe.io> (http://orbe.io)",
+  "author": "Etienne Pinchon (@etiennepinchon)",
   "license": "Apache-2.0",
   "dependencies": {
     "coffee-script": "^1.10.0",
@@ -27,10 +27,11 @@
     "restify-cookies": "^0.2.2",
     "uglify-js": "^2.6.4",
     "walk": "^2.3.9",
-    "watch": "^0.19.1"
+    "watch": "^0.19.1",
+    "mkdirp": "^0.5.1"
   },
   "repository": {
     "type" : "git",
-    "url" : "https://github.com/orbeio/terminal"
+    "url" : "https://github.com/etiennepinchon/magixjs"
   }
 }

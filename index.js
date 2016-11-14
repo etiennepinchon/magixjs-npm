@@ -1,6 +1,4 @@
-#!/usr/bin/env node
-
-var CoffeeScript, CookieParser, Generate, about, build, buildAutoImport, buildProduction, capitalizeFirstLetter, clean, colors, compileFile, create, deleteFolderRecursive, dirCheck, fs, getDirectories, indent, launch, makeID, path, program, prompt, reorderFiles, restify, uglify, walk, watch, watcher;
+var CoffeeScript, CookieParser, Generate, about, build, buildAutoImport, buildProduction, capitalizeFirstLetter, clean, colors, compileFile, create, deleteFolderRecursive, dirCheck, fs, getDirectories, indent, launch, makeID, mkdirp, path, program, prompt, reorderFiles, restify, uglify, walk, watch, watcher;
 
 prompt = require('prompt');
 
@@ -26,7 +24,9 @@ restify = require('restify');
 
 CookieParser = require('restify-cookies');
 
-prompt.message = 'Orbe';
+mkdirp = require('mkdirp');
+
+prompt.message = 'MagiX';
 
 Array.prototype.move = function(old_index, new_index) {
   var k;
@@ -122,132 +122,117 @@ makeID = function() {
 };
 
 about = function() {
-  console.log('');
-  console.log('                 888');
-  console.log('                 888');
-  console.log('                 888');
-  console.log(' .d88b.  888d888 88888b.   .d88b.');
-  console.log('d88""88b 888P"   888 "88b d8P  Y8b');
-  console.log('888  888 888     888  888 88888888');
-  console.log('Y88..88P 888     888 d88P Y8b.');
-  console.log(' "Y88P"  888     88888P"   "Y8888');
-  console.log('');
-  console.log('Orbe | orbe.io'.green);
+  console.log('\n');
+  console.log('                             d8bY88b   d88P	');
+  console.log('                             Y8P Y88b d88P 	');
+  console.log('                                  Y88o88P  	');
+  console.log('88888b.d88b.  8888b.  .d88b. 888   Y888P   	');
+  console.log('888 "888 "88b    "88bd88P"88b888   d888b   	');
+  console.log('888  888  888.d888888888  888888  d88888b  	');
+  console.log('888  888  888888  888Y88b 888888 d88P Y88b 	');
+  console.log('888  888  888"Y888888 "Y88888888d88P   Y88b 	');
+  console.log('                          888              	');
+  console.log('                     Y8b d88P              	');
+  console.log('                      "Y88P"      				');
+  console.log('MagiX | magixjs.com'.green);
+  console.log('In mystery lies beauty.'.green);
   console.log('Created by Etienne Pinchon (@etiennepinchon)'.green);
   console.log('Copyright ©2016'.green);
+  console.log('\n');
+  console.log('Usage:'.green);
+  console.log('* create [name] | Create a new project.');
+  console.log('* launch [dir] [port] | Create a new project.');
+  console.log('* build [dir] [env] | Build a project.');
+  console.log('* clean [dir] | Clear the build of a project.');
+  console.log('* watch [dir] | Observe change on a project and compile on the fly.');
+  console.log('\n');
 };
 
-create = function(type) {
-  if (!type) {
-    console.log('Orbe: [ERR] Orbe type required! Choose from "app" or "playground" like so "orbe create app" :)'.red);
+create = function(name) {
+  var appCS, appJS, appNameCS, createCatalog, createIndexJS, createJSON, dirBuild, dirSources, dir_project, done, htmlContent;
+  if (!name || !/^[a-zA-Z0-9\_\s\-]{1,100}$/.test(name)) {
+    console.log('MagiX: [ERR] Name must be only letters, numbers, underscores, spaces or dashes.'.red);
     return;
   }
-  type = type.toLowerCase();
-  if (type === 'app' || type === 'playground') {
-    prompt.start();
-    prompt.get({
-      properties: {
-        name: {
-          pattern: /^[a-zA-Z0-9\_\s\-]{1,100}$/,
-          message: 'Name must be only letters, numbers, underscores, spaces or dashes.',
-          required: true
-        }
-      }
-    }, function(err, result) {
-      var appCS, appJS, appNameCS, createCatalog, createIndexJS, createJSON, dirBuild, dirOrb, dirSources, done, htmlContent;
+  dir_project = '.';
+  appJS = Generate.JS();
+  appCS = Generate.CS();
+  done = function() {
+    return path = process.cwd();
+
+    /*
+    		+ '/magix-' + name
+    		console.log 'MagiX: Project created successfully.'.green
+    		console.log 'MagiX: Path: ' + path
+    		console.log 'MagiX: Run -> cd ' + path
+     */
+  };
+  createJSON = function() {
+    var packageFile;
+    packageFile = {
+      name: name,
+      version: '0.0.0',
+      description: '',
+      tags: '',
+      created_at: new Date
+    };
+    return fs.writeFile(dir_project + '/package.json', JSON.stringify(packageFile, null, 2), function(err) {
       if (err) {
-        return;
+        return console.log(err);
       }
-      dirOrb = './orb-' + result.name;
-      if (!fs.existsSync(dirOrb)) {
-        fs.mkdirSync(dirOrb);
+      return done();
+    });
+  };
+  createIndexJS = function() {
+    var indexJS;
+    indexJS = Generate.indexJS();
+    return fs.writeFile(dir_project + '/build/index.js', indexJS, function(err) {
+      if (err) {
+        return console.log(err);
       }
-      appJS = Generate.JS();
-      appCS = Generate.CS();
-      if (type === 'playground') {
-        appJS = Generate.PlaygroundJS(Generate.PlaygroundContentJS());
-        appCS = Generate.PlaygroundContentCS();
+      return createCatalog();
+    });
+  };
+  createCatalog = function() {
+    var catalog;
+    catalog = Generate.catalog();
+    return fs.writeFile(dir_project + '/build/catalog.js', catalog, function(err) {
+      if (err) {
+        return console.log(err);
       }
-      done = function() {
-        console.log('Orbe: ' + type + ' created successfully.'.green);
-        return console.log('Orbe: Path: ' + process.cwd() + '/orb-' + result.name);
-      };
-      createJSON = function() {
-        var packageFile;
-        packageFile = {
-          name: result.name,
-          type: type,
-          version: '0.0.0',
-          description: '',
-          tags: '',
-          created_at: new Date
-        };
-        return fs.writeFile(dirOrb + '/orb.json', JSON.stringify(packageFile, null, 2), function(err) {
-          if (err) {
-            return console.log(err);
-          }
-          return done();
-        });
-      };
-      createIndexJS = function() {
-        var indexJS;
-        indexJS = Generate.indexJS();
-        return fs.writeFile(dirOrb + '/build/index.js', indexJS, function(err) {
-          if (err) {
-            return console.log(err);
-          }
-          return createCatalog();
-        });
-      };
-      createCatalog = function() {
-        var catalog;
-        catalog = Generate.catalog();
-        return fs.writeFile(dirOrb + '/build/catalog.js', catalog, function(err) {
-          if (err) {
-            return console.log(err);
-          }
-          return createJSON();
-        });
-      };
-      dirBuild = dirOrb + '/build';
-      dirSources = dirOrb + '/documents';
-      if (!fs.existsSync(dirOrb)) {
-        fs.mkdirSync(dirOrb);
+      return createJSON();
+    });
+  };
+  dirBuild = dir_project + '/build';
+  dirSources = dir_project + '/documents';
+  if (!fs.existsSync(dir_project)) {
+    fs.mkdirSync(dir_project);
+  }
+  if (!fs.existsSync(dirBuild)) {
+    fs.mkdirSync(dirBuild);
+  }
+  if (!fs.existsSync(dirSources)) {
+    fs.mkdirSync(dirSources);
+  }
+  htmlContent = Generate.HTML(name, '', '', false);
+  appNameCS = '/App.coffee';
+  appJS = Generate.appRunJS(indent(appJS, 1));
+  fs.writeFile(dir_project + '/index.html', htmlContent, function(err) {
+    if (err) {
+      return console.log(err);
+    }
+    fs.writeFile(dirBuild + '/App.js', appJS, function(err) {
+      if (err) {
+        return console.log(err);
       }
-      if (!fs.existsSync(dirBuild)) {
-        fs.mkdirSync(dirBuild);
-      }
-      if (!fs.existsSync(dirSources)) {
-        fs.mkdirSync(dirSources);
-      }
-      htmlContent = Generate.HTML(result.name, '', '', false);
-      appNameCS = '/App.coffee';
-      if (type === 'playground') {
-        appNameCS = '/Playground.coffee';
-        appJS = Generate.playgroundRunJS(indent(appJS, 1));
-      } else {
-        appJS = Generate.appRunJS(indent(appJS, 1));
-      }
-      fs.writeFile(dirOrb + '/index.html', htmlContent, function(err) {
+      fs.writeFile(dirSources + appNameCS, appCS, function(err) {
         if (err) {
           return console.log(err);
         }
-        fs.writeFile(dirBuild + '/App.js', appJS, function(err) {
-          if (err) {
-            return console.log(err);
-          }
-          fs.writeFile(dirSources + appNameCS, appCS, function(err) {
-            if (err) {
-              return console.log(err);
-            }
-            createIndexJS();
-          });
-        });
+        createIndexJS();
       });
     });
-    return;
-  }
-  return console.log('Orbe: [ERR] Invalid orb type.'.red);
+  });
 };
 
 launch = function(dir, server_port) {
@@ -264,7 +249,7 @@ launch = function(dir, server_port) {
     dir = process.cwd();
   }
   if (!fs.existsSync(dir)) {
-    console.log('Orbe: [ERR] Given folder does not exist.'.red);
+    console.log('MagiX: [ERR] Given folder does not exist.'.red);
     return;
   }
   if (dir.endsWith('/')) {
@@ -297,7 +282,7 @@ launch = function(dir, server_port) {
   server.start = function(message) {
     return server.listen(server.__port, 'localhost', function() {
       if (message) {
-        return console.log(('Orbe: Orb launched! Running! Address ' + server.url).green);
+        return console.log(('MagiX: Project launched! Running! Address ' + server.url).green);
       }
     });
   };
@@ -345,7 +330,7 @@ build = function(dir, env) {
       file = root + '/' + filename;
       file_build = file.replace('documents', 'build');
       files.push(file);
-      console.log(('Orbe: Copy ' + filename).magenta);
+      console.log(('MagiX: Copy ' + filename).magenta);
       fs.copy(file, file_build, function(err) {
         if (err) {
           return console.error(err);
@@ -360,7 +345,7 @@ build = function(dir, env) {
     var endA;
     buildAutoImport(dir);
     endA = +new Date();
-    console.log(("Orbe: Done: " + files.length + " files built in " + (endA - startA) + " ms.").green);
+    console.log(("MagiX: Done: " + files.length + " files built in " + (endA - startA) + " ms.").green);
     if (isProd) {
       buildProduction(dir);
     }
@@ -374,7 +359,7 @@ watch = function(dir, server) {
   if (!dirCheck(dir)) {
     return;
   }
-  console.log('Orbe: Now observing changes in your project..'.green);
+  console.log('MagiX: Now observing changes in your project..'.green);
   return watcher(dir + '/documents', function(filename) {
     var file_build, name;
     if (filename && filename.endsWith('.coffee')) {
@@ -393,7 +378,7 @@ watch = function(dir, server) {
       name = name[name.length - 1];
       file_build = filename.replace('documents', 'build');
       if (fs.existsSync(filename)) {
-        console.log(('Orbe: Updating ' + name).magenta);
+        console.log(('MagiX: Updating ' + name).magenta);
         fs.copy(filename, file_build, function(err) {
           if (err) {
             return console.error(err);
@@ -402,7 +387,7 @@ watch = function(dir, server) {
       } else if (fs.existsSync(file_build)) {
         name = file_build.split('/');
         name = name[name.length - 1];
-        console.log(('Orbe: Removing ' + name).magenta);
+        console.log(('MagiX: Removing ' + name).magenta);
         fs.unlink(file_build, function(err) {
           if (err) {
             return console.log(err);
@@ -425,11 +410,11 @@ clean = function(dir) {
   if (!dirCheck(dir)) {
     return;
   }
-  console.log('Orbe: Cleaning..'.magenta);
+  console.log('MagiX: Cleaning..'.magenta);
   pathBuild = dir + '/build';
   deleteFolderRecursive(pathBuild);
   build(dir);
-  console.log("Orbe: Done: build cleaned.".green);
+  console.log("MagiX: Done: build cleaned.".green);
 };
 
 dirCheck = function(dir) {
@@ -440,7 +425,7 @@ dirCheck = function(dir) {
   dir_build_check = false;
   dir_documents_check = false;
   if (!fs.existsSync(dir)) {
-    console.log('Orbe: [ERR] Given folder does not exist.'.red);
+    console.log('MagiX: [ERR] Given folder does not exist.'.red);
     return;
   }
   directories = getDirectories(dir);
@@ -454,8 +439,8 @@ dirCheck = function(dir) {
   }
   if (!dir_build_check || !dir_documents_check) {
     if (!dir_build_check && !dir_documents_check) {
-      console.log('Orbe: [ERR] Cannot find the "documents" directory.'.red);
-      console.log('Orbe: [HELP] Are you sure you are in the right folder? (cd orb-yourProjectName ;) ).'.magenta);
+      console.log('MagiX: [ERR] Cannot find the "documents" directory.'.red);
+      console.log('MagiX: [HELP] Are you sure you are in the right folder? (cd magix-yourProjectName ;) ).'.magenta);
     } else {
       if (!dir_build_check) {
         dirBuild = __dirname + '/build';
@@ -465,7 +450,7 @@ dirCheck = function(dir) {
         return true;
       }
       if (!dir_documents_check) {
-        console.log('Orbe: [ERR] Cannot find the "documents" directory.'.red);
+        console.log('MagiX: [ERR] Cannot find the "documents" directory.'.red);
       }
     }
     return false;
@@ -474,15 +459,15 @@ dirCheck = function(dir) {
 };
 
 compileFile = function(name, dir, next, notification) {
-  console.log(('Orbe: Processing ' + name + ' ..').magenta);
+  console.log(('MagiX: Processing ' + name + ' ..').magenta);
   return fs.readFile(dir + '/' + name + '.coffee', 'utf8', function(err, data) {
-    var addClass, classFile, classes, contentCopy, convert_error, converted, convertedFinal, dirBuild, error, file, filePathBuild, lines_info, notifier;
+    var addClass, classFile, classes, contentCopy, convert_error, converted, dirBuild, file, nextStep;
     if (err) {
       return console.log(err);
     }
     contentCopy = data;
     file = {};
-    if (name !== 'Playground' && name !== 'App') {
+    if (name !== 'App') {
       if (/(Extends )\w+[ ]*\n/.test(contentCopy)) {
         contentCopy = contentCopy.replace(/(Extends )\w+[ ]*\n/, function(match) {
           file.type = match.replace('Extends ', '');
@@ -555,43 +540,51 @@ compileFile = function(name, dir, next, notification) {
       convert_error = err;
     }
     dirBuild = dir.replace('documents', 'build');
-    if (!fs.existsSync(dirBuild)) {
-      fs.mkdirSync(dirBuild);
-    }
-    filePathBuild = dirBuild + '/' + name + '.js';
-    if (converted) {
-      if (name === 'Playground') {
-        filePathBuild = dirBuild + '/App.js';
-        convertedFinal = Generate.appRunJS(indent(Generate.PlaygroundJS(converted), 1));
-      } else if (name === 'App') {
-        convertedFinal = Generate.appRunJS(indent(converted, 1));
-      } else {
-        convertedFinal = converted;
-      }
-      return fs.writeFile(filePathBuild, convertedFinal, function(err) {
-        if (err) {
-          console.log(err);
+    nextStep = function() {
+      var convertedFinal, error, filePathBuild, lines_info, notifier;
+      filePathBuild = dirBuild + '/' + name + '.js';
+      if (converted) {
+        if (name === 'App') {
+          convertedFinal = Generate.appRunJS(indent(converted, 1));
+        } else {
+          convertedFinal = converted;
         }
-        console.log('Orbe: ↳ success'.green);
-        if (next) {
-          return next();
+        return fs.writeFile(filePathBuild, convertedFinal, function(err) {
+          if (err) {
+            console.log(err);
+          }
+          console.log('MagiX: ↳ success'.green);
+          if (next) {
+            return next();
+          }
+        });
+      } else {
+        lines_info = String(convert_error).replace('[stdin]:', '').split(':');
+        error = capitalizeFirstLetter("" + convert_error.message + " at line " + lines_info[0] + " column " + lines_info[1]);
+        console.log(("MagiX: ↳ " + error).red);
+        if (notification) {
+          notifier = require('node-notifier');
+          path = require('path');
+          return notifier.notify({
+            title: 'Magix | Error on ' + name,
+            message: error,
+            icon: path.join(__dirname, 'images/icon.png'),
+            sound: false,
+            wait: false
+          }, function(err, response) {});
+        }
+      }
+    };
+    if (!fs.existsSync(dirBuild)) {
+      return mkdirp(dirBuild, function(err) {
+        if (err) {
+          return console.error(err);
+        } else {
+          return nextStep();
         }
       });
     } else {
-      lines_info = String(convert_error).replace('[stdin]:', '').split(':');
-      error = capitalizeFirstLetter("" + convert_error.message + " at line " + lines_info[0] + " column " + lines_info[1]);
-      console.log(("Orbe: ↳ " + error).red);
-      if (notification) {
-        notifier = require('node-notifier');
-        path = require('path');
-        return notifier.notify({
-          title: 'Orbe | Error on ' + name,
-          message: error,
-          icon: path.join(__dirname, 'images/icon.png'),
-          sound: false,
-          wait: false
-        }, function(err, response) {});
-      }
+      return nextStep();
     }
   });
 };
@@ -618,7 +611,7 @@ buildAutoImport = function(dir) {
         if (data[0] !== '!') {
           root = root.substring(root.indexOf("/documents") + 1);
           path = '/' + root.replace('documents', 'build') + '/' + stat.name.replace('coffee', 'js');
-          if (path !== '/build/Playground.js' && path !== '/build/App.js') {
+          if (path !== '/build/App.js') {
             if (/(Element )([-a-zA-Z0-9])*\n/.test(data)) {
               doc["extends"] = data.match(/(Element )([-a-zA-Z0-9])*\n/)[0].replace('Element ', '');
               doc["extends"] = doc["extends"].replace(/\n/, '');
@@ -664,7 +657,7 @@ buildAutoImport = function(dir) {
 };
 
 buildProduction = function(dir) {
-  var cleaning, config, dirName, files, folder, minify, orbJSON, paths_to_remove, prodFolder, scriptID;
+  var cleaning, config, dirName, files, folder, magixJSON, minify, paths_to_remove, prodFolder, scriptID;
   if (!dir) {
     dir = process.cwd();
   }
@@ -673,16 +666,16 @@ buildProduction = function(dir) {
   files = [];
   folder = path.dirname(dir) + '/' + dirName;
   paths_to_remove = [];
-  orbJSON = fs.readFileSync(folder + '/orb.json', 'utf8');
-  config = JSON.parse(orbJSON);
+  magixJSON = fs.readFileSync(folder + '/package.json', 'utf8');
+  config = JSON.parse(magixJSON);
   if (!config.name) {
-    console.log('Orbe: [ERR] Invalid JSON project file, name missing.'.red);
+    console.log('MagiX: [ERR] Invalid JSON project file, name missing.'.red);
     return;
   }
-  prodFolder = folder + ("/../orb-" + config.name + "-production");
+  prodFolder = folder + ("/../magix-" + config.name + "-production");
   scriptID = makeID();
   if (!fs.existsSync(prodFolder)) {
-    console.log('Orbe: Cloning working project..'.magenta);
+    console.log('MagiX: Cloning working project..'.magenta);
     fs.mkdirSync(prodFolder);
   }
   if (fs.existsSync(prodFolder + '/build')) {
@@ -692,7 +685,7 @@ buildProduction = function(dir) {
     if (err) {
       return console.error(err);
     }
-    console.log(('Orbe: Production path: ' + prodFolder).green);
+    console.log(('MagiX: Production path: ' + prodFolder).green);
     fs.writeFile(prodFolder + '/build/index.js', Generate.indexJS(JSON.stringify('/build/' + scriptID + '.js')), function(err) {
       if (err) {
         return console.log(err);
@@ -714,7 +707,7 @@ buildProduction = function(dir) {
       }
       if (stat.name.endsWith('.coffee') || stat.name.endsWith('.js') || stat.name.endsWith('.css')) {
         name = name.replace('.coffee', '').replace('.js', '').replace('.css', '');
-        if (name !== 'Playground' || name !== 'App') {
+        if (name !== 'App') {
           paths_to_remove.push(root + '/' + stat.name);
         }
       }
@@ -727,7 +720,7 @@ buildProduction = function(dir) {
           }
           path = root.replace('documents', 'build') + '/' + stat.name.replace('coffee', 'js');
           if (data[0] !== '!') {
-            if (path !== prodFolder + '/build/Playground.js' && path !== prodFolder + '/build/App.js') {
+            if (path !== prodFolder + '/build/App.js') {
               files.push(path);
               return next();
             } else {
@@ -750,13 +743,13 @@ buildProduction = function(dir) {
     return walker.on('end', function() {
       var appPath, uglified;
       files.push(prodFolder + '/build/App.js');
-      uglified = '/* Made with Orbe (orbe.io) and a smile :) */ ' + uglify.minify(files).code;
-      console.log('Orbe: Minify script..'.magenta);
+      uglified = '/* Made with MagiX (magixjs.com) and a smile :) */ ' + uglify.minify(files).code;
+      console.log('MagiX: Minify script..'.magenta);
       appPath = prodFolder + '/build/' + scriptID + '.js';
       fs.writeFile(appPath, uglified, function(err) {
-        console.log('Orbe: Cleaning..'.magenta);
+        console.log('MagiX: Cleaning..'.magenta);
         return cleaning(function() {
-          return console.log("Orbe: Done: Orb built for production.".green);
+          return console.log("MagiX: Done: project built for production.".green);
         });
       });
     });
@@ -793,7 +786,7 @@ buildProduction = function(dir) {
         files = fs.readdirSync(folder);
       }
       if (files.length === 0) {
-        console.log(('Orbe: removing: ' + folder).magenta);
+        console.log(('MagiX: removing: ' + folder).magenta);
         fs.rmdirSync(folder);
         return;
       }
@@ -806,11 +799,22 @@ buildProduction = function(dir) {
   };
 };
 
-program.command('about').description('About Orbe.').action(about);
+program.command('about', {
+  isDefault: true
+}).description('About magiX.').action(about);
 
-program.command('create [type]').description('Allow you to create a project.').action(create);
+program.command('create [name]').description('Create a new project.').action(create);
 
-program.command('launch [dir] [port]').description('Launch a local server to help you code an orb project.').action(launch);
+program.command('launch [dir] [port]').description('Launch a local server to help you code an magix project.').action(launch);
+
+
+/*
+ * Maybe for later
+program
+	.command('forever [dir] [port]')
+	.description('Launch a local server that runs continuously.')
+	.action forever
+ */
 
 program.command('build [dir] [env]').description('Build a project.').action(build);
 

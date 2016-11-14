@@ -15,11 +15,12 @@ CoffeeScript = require('coffee-script')
 uglify 		 = require('uglify-js')
 restify 	 = require('restify')
 CookieParser = require('restify-cookies')
+mkdirp 		 = require('mkdirp')
 
 ##############################################################
 # CONFIG
 
-prompt.message = 'Orbe'
+prompt.message = 'MagiX'
 
 ##############################################################
 # HELPERS
@@ -96,118 +97,108 @@ makeID = ->
 # PROGRAMS FUNCTIONS
 
 about = ->
-	console.log ''
-	console.log '                 888'
-	console.log '                 888'
-	console.log '                 888'
-	console.log ' .d88b.  888d888 88888b.   .d88b.'
-	console.log 'd88""88b 888P"   888 "88b d8P  Y8b'
-	console.log '888  888 888     888  888 88888888'
-	console.log 'Y88..88P 888     888 d88P Y8b.'
-	console.log ' "Y88P"  888     88888P"   "Y8888'
-	console.log ''
-	console.log 'Orbe | orbe.io'.green
+	console.log '\n'
+	console.log '                             d8bY88b   d88P	'
+	console.log '                             Y8P Y88b d88P 	'
+	console.log '                                  Y88o88P  	'
+	console.log '88888b.d88b.  8888b.  .d88b. 888   Y888P   	'
+	console.log '888 "888 "88b    "88bd88P"88b888   d888b   	'
+	console.log '888  888  888.d888888888  888888  d88888b  	'
+	console.log '888  888  888888  888Y88b 888888 d88P Y88b 	'
+	console.log '888  888  888"Y888888 "Y88888888d88P   Y88b 	'
+	console.log '                          888              	'
+	console.log '                     Y8b d88P              	'
+	console.log '                      "Y88P"      				'
+	console.log 'MagiX | magixjs.com'.green
+	console.log 'In mystery lies beauty.'.green
 	console.log 'Created by Etienne Pinchon (@etiennepinchon)'.green
 	console.log 'Copyright ©2016'.green
+	console.log '\n'
+	console.log 'Usage:'.green
+	console.log '* create [name] | Create a new project.'
+	console.log '* launch [dir] [port] | Create a new project.'
+	console.log '* build [dir] [env] | Build a project.'
+	console.log '* clean [dir] | Clear the build of a project.'
+	console.log '* watch [dir] | Observe change on a project and compile on the fly.'
+	console.log '\n'
 	return
 
-create = (type) ->
+create = (name) ->
 
-	if not type
-		console.log 'Orbe: [ERR] Orbe type required! Choose from "app" or "playground" like so "orbe create app" :)'.red
+	if not name or not /^[a-zA-Z0-9\_\s\-]{1,100}$/.test name
+		console.log 'MagiX: [ERR] Name must be only letters, numbers, underscores, spaces or dashes.'.red
 		return
 
-	# Lower case
-	type = type.toLowerCase()
+	dir_project = '.'#/magix-' + name
+	#if not fs.existsSync(dir_project)
+	#    fs.mkdirSync(dir_project)
+		
+	# Generate App content in both JS and CS
+	appJS = Generate.JS()
+	appCS = Generate.CS()
 
-	if type is 'app' or type is 'playground' #or type is 'module'
-		prompt.start()
-		prompt.get properties:
-			name:
-				pattern: /^[a-zA-Z0-9\_\s\-]{1,100}$/
-				message: 'Name must be only letters, numbers, underscores, spaces or dashes.'
-				required: true
-		, (err, result) ->
-			return if err
+	done = ->
+		path = process.cwd() 
+		###
+		+ '/magix-' + name
+		console.log 'MagiX: Project created successfully.'.green
+		console.log 'MagiX: Path: ' + path
+		console.log 'MagiX: Run -> cd ' + path
+		###
+	createJSON = ->
+		packageFile = 
+			name: name
+			version: '0.0.0'
+			description: ''
+			tags: ''
+			created_at: new Date
+
+		fs.writeFile dir_project + '/package.json', JSON.stringify(packageFile, null, 2), (err) ->
+			return console.log(err) if err
+			done()
+
+	createIndexJS = ->
+		indexJS = Generate.indexJS()
+		fs.writeFile dir_project + '/build/index.js', indexJS, (err) ->
+			return console.log(err) if err
+			createCatalog()
+
+	createCatalog = ->
+		catalog = Generate.catalog()
+		fs.writeFile dir_project + '/build/catalog.js', catalog, (err) ->
+			return console.log(err) if err
+			createJSON()
 			
-			dirOrb = './orb-' + result.name
-			if not fs.existsSync(dirOrb)
-			    fs.mkdirSync(dirOrb)
-				
-			# Generate App content in both JS and CS
-			appJS = Generate.JS()
-			appCS = Generate.CS()
+	# Folders and files generation
+	dirBuild = dir_project + '/build'
+	dirSources = dir_project + '/documents'
 
-			if type is 'playground'
-				appJS = Generate.PlaygroundJS(Generate.PlaygroundContentJS())
-				appCS = Generate.PlaygroundContentCS()
+	fs.mkdirSync dir_project if not fs.existsSync(dir_project)
+	fs.mkdirSync dirBuild if not fs.existsSync(dirBuild)
+	fs.mkdirSync dirSources if not fs.existsSync(dirSources)
+
+	htmlContent = Generate.HTML(name, '', '', no)
 			
-			done = ->
-				console.log 'Orbe: '+type+' created successfully.'.green
-				console.log 'Orbe: Path: ' + process.cwd() + '/orb-' + result.name
-
-			createJSON = ->
-				packageFile = 
-					name: result.name
-					type: type
-					version: '0.0.0'
-					description: ''
-					tags: ''
-					created_at: new Date
-
-				fs.writeFile dirOrb + '/orb.json', JSON.stringify(packageFile, null, 2), (err) ->
-					return console.log(err) if err
-					done()
-
-			createIndexJS = ->
-				indexJS = Generate.indexJS()
-				fs.writeFile dirOrb + '/build/index.js', indexJS, (err) ->
-					return console.log(err) if err
-					createCatalog()
-
-			createCatalog = ->
-				catalog = Generate.catalog()
-				fs.writeFile dirOrb + '/build/catalog.js', catalog, (err) ->
-					return console.log(err) if err
-					createJSON()
-					
-			# Folders and files generation
-			dirBuild = dirOrb + '/build'
-			dirSources = dirOrb + '/documents'
-
-			fs.mkdirSync dirOrb if not fs.existsSync(dirOrb)
-			fs.mkdirSync dirBuild if not fs.existsSync(dirBuild)
-			fs.mkdirSync dirSources if not fs.existsSync(dirSources)
-
-			htmlContent = Generate.HTML(result.name, '', '', no)
-					
-			appNameCS = '/App.coffee'
-			if type is 'playground'
-				appNameCS = '/Playground.coffee' 
-				appJS = Generate.playgroundRunJS indent(appJS, 1)
-			else
-				appJS = Generate.appRunJS indent(appJS, 1)
+	appNameCS = '/App.coffee'
+	appJS = Generate.appRunJS indent(appJS, 1)
+		
+	# Write HTML content
+	fs.writeFile dir_project + '/index.html', htmlContent, (err) ->
+		return console.log(err) if err
+			
+		# Write BUILD content
+		fs.writeFile dirBuild + '/App.js', appJS, (err) ->
+			return console.log(err) if err
 				
-			# Write HTML content
-			fs.writeFile dirOrb + '/index.html', htmlContent, (err) ->
+			# Write SOURCES content
+			fs.writeFile dirSources + appNameCS, appCS, (err) ->
 				return console.log(err) if err
 					
-				# Write BUILD content
-				fs.writeFile dirBuild + '/App.js', appJS, (err) ->
-					return console.log(err) if err
-						
-					# Write SOURCES content
-					fs.writeFile dirSources + appNameCS, appCS, (err) ->
-						return console.log(err) if err
-							
-						createIndexJS()
-						return
-					return
+				createIndexJS()
 				return
 			return
 		return
-
-	console.log 'Orbe: [ERR] Invalid orb type.'.red
+	return
 
 launch = (dir, server_port)->
 
@@ -221,7 +212,7 @@ launch = (dir, server_port)->
 
 	dir = process.cwd() if not dir 
 	if not fs.existsSync(dir)
-		console.log 'Orbe: [ERR] Given folder does not exist.'.red
+		console.log 'MagiX: [ERR] Given folder does not exist.'.red
 		return
 
 	# If dir ends with / remove it
@@ -255,7 +246,7 @@ launch = (dir, server_port)->
 	server.start = (message)->
 		server.listen server.__port, 'localhost', ->
 			if message
-				console.log(('Orbe: Orb launched! Running! Address ' + server.url).green)
+				console.log(('MagiX: Project launched! Running! Address ' + server.url).green)
 	
 	server.start(yes)
 	if fs.existsSync(dir + '/documents')
@@ -297,7 +288,7 @@ build = (dir, env) ->
 			file_build = file.replace('documents', 'build')
 			files.push file
 
-			console.log ('Orbe: Copy ' + filename).magenta
+			console.log ('MagiX: Copy ' + filename).magenta
 			fs.copy file, file_build, (err) ->
 				return console.error(err) if err
 				next()
@@ -309,17 +300,16 @@ build = (dir, env) ->
 		buildAutoImport(dir)
 
 		endA = +new Date()
-		console.log "Orbe: Done: #{files.length} files built in #{(endA-startA)} ms.".green
+		console.log "MagiX: Done: #{files.length} files built in #{(endA-startA)} ms.".green
 
 		# Build production project
 		buildProduction(dir) if isProd
 		return
 
-
 watch = (dir, server) ->
 	dir = '.' if not dir
 	return if not dirCheck dir
-	console.log 'Orbe: Now observing changes in your project..'.green
+	console.log 'MagiX: Now observing changes in your project..'.green
 
 	watcher dir + '/documents', (filename) ->
 
@@ -345,13 +335,13 @@ watch = (dir, server) ->
 			file_build = filename.replace('documents', 'build')
 			# If the path exist, simply copy the JS file to the build
 			if fs.existsSync(filename)
-				console.log ('Orbe: Updating ' + name).magenta
+				console.log ('MagiX: Updating ' + name).magenta
 				fs.copy filename, file_build, (err) ->
 					return console.error(err) if err
 			else if fs.existsSync(file_build)
 				name = file_build.split('/')
 				name = name[name.length-1]
-				console.log ('Orbe: Removing ' + name).magenta
+				console.log ('MagiX: Removing ' + name).magenta
 				fs.unlink file_build, (err) ->
 					console.log err if err
 
@@ -368,12 +358,12 @@ clean = (dir) ->
 	dir = '.' if not dir
 	return if not dirCheck dir
 
-	console.log 'Orbe: Cleaning..'.magenta
+	console.log 'MagiX: Cleaning..'.magenta
 
 	pathBuild = dir + '/build'
 	deleteFolderRecursive pathBuild
 	build(dir)
-	console.log "Orbe: Done: build cleaned.".green
+	console.log "MagiX: Done: build cleaned.".green
 	return
 
 	
@@ -387,7 +377,7 @@ dirCheck = (dir)->
 	dir_documents_check	= no
 
 	if not fs.existsSync(dir)
-		console.log 'Orbe: [ERR] Given folder does not exist.'.red
+		console.log 'MagiX: [ERR] Given folder does not exist.'.red
 		return
 
 	directories = getDirectories(dir)
@@ -399,21 +389,21 @@ dirCheck = (dir)->
 
 	if not dir_build_check or not dir_documents_check
 		if not dir_build_check and not dir_documents_check
-			console.log 'Orbe: [ERR] Cannot find the "documents" directory.'.red
-			console.log 'Orbe: [HELP] Are you sure you are in the right folder? (cd orb-yourProjectName ;) ).'.magenta
+			console.log 'MagiX: [ERR] Cannot find the "documents" directory.'.red
+			console.log 'MagiX: [HELP] Are you sure you are in the right folder? (cd magix-yourProjectName ;) ).'.magenta
 		else
 			if not dir_build_check
 				dirBuild = __dirname + '/build'
 				fs.mkdirSync dirBuild if not fs.existsSync(dirBuild)
 				return yes
 			if not dir_documents_check
-				console.log 'Orbe: [ERR] Cannot find the "documents" directory.'.red
+				console.log 'MagiX: [ERR] Cannot find the "documents" directory.'.red
 		return no
 
 	return yes
 
 compileFile = (name, dir, next, notification)->
-	console.log ('Orbe: Processing ' + name + ' ..').magenta
+	console.log ('MagiX: Processing ' + name + ' ..').magenta
 
 	fs.readFile dir + '/' + name + '.coffee', 'utf8', (err, data) ->
 		return console.log(err) if err
@@ -421,7 +411,7 @@ compileFile = (name, dir, next, notification)->
 		contentCopy = data
 		file = {}
 
-		if name isnt 'Playground' and name isnt 'App'
+		if name isnt 'App'
 			if /(Extends )\w+[ ]*\n/.test(contentCopy)
 				contentCopy = contentCopy.replace /(Extends )\w+[ ]*\n/, (match) ->	
 					file.type = match.replace('Extends ', '')
@@ -497,42 +487,47 @@ compileFile = (name, dir, next, notification)->
 		
 		# Define paths
 		dirBuild = dir.replace('documents', 'build')
-		fs.mkdirSync dirBuild if not fs.existsSync(dirBuild)
+		
+		nextStep = ->
+			filePathBuild = dirBuild + '/' + name + '.js'
+			
+			if converted
+				if name is 'App'
+					convertedFinal = Generate.appRunJS indent(converted, 1)
+				else
+					convertedFinal = converted
 
-		filePathBuild = dirBuild + '/' + name + '.js'
-
-		if converted
-			if name is 'Playground'
-				filePathBuild = dirBuild + '/App.js'
-				convertedFinal = Generate.appRunJS indent(Generate.PlaygroundJS(converted), 1)
-			else if name is 'App'
-				convertedFinal = Generate.appRunJS indent(converted, 1)
+				fs.writeFile filePathBuild, convertedFinal, (err) ->
+					console.log err if err
+					console.log 'MagiX: ↳ success'.green
+					next() if next
 			else
-				convertedFinal = converted
+				lines_info = String(convert_error).replace('[stdin]:', '').split(':')
+				error = capitalizeFirstLetter "#{convert_error.message} at line #{lines_info[0]} column #{lines_info[1]}"
+				console.log "MagiX: ↳ #{error}".red
 
-			fs.writeFile filePathBuild, convertedFinal, (err) ->
-				console.log err if err
-				console.log 'Orbe: ↳ success'.green
-				next() if next
+				# Show user notification when watching changes
+				if notification
+					notifier = require('node-notifier')
+					path = require('path')
+					notifier.notify {
+					  title: 'Magix | Error on ' + name
+					  message: error
+					  icon: path.join(__dirname, 'images/icon.png')
+					  sound: no
+					  wait: no
+					}, (err, response) ->
+					  # Response is response from notification
+					  return
+		
+		if not fs.existsSync(dirBuild)
+			mkdirp dirBuild, (err) ->
+				if err
+					console.error err
+				else
+					nextStep()
 		else
-			lines_info = String(convert_error).replace('[stdin]:', '').split(':')
-			error = capitalizeFirstLetter "#{convert_error.message} at line #{lines_info[0]} column #{lines_info[1]}"
-			console.log "Orbe: ↳ #{error}".red
-
-			# Show user notification when watching changes
-			if notification
-				notifier = require('node-notifier')
-				path = require('path')
-				notifier.notify {
-				  title: 'Orbe | Error on ' + name
-				  message: error
-				  icon: path.join(__dirname, 'images/icon.png')
-				  sound: no
-				  wait: no
-				}, (err, response) ->
-				  # Response is response from notification
-				  return
-
+			nextStep()
 
 buildAutoImport = (dir)->
 	autoImport = []
@@ -559,7 +554,7 @@ buildAutoImport = (dir)->
 				if data[0] isnt '!'
 					root = root.substring(root.indexOf("/documents") + 1)
 					path = '/' + root.replace('documents', 'build') + '/' + stat.name.replace('coffee', 'js')
-					if path isnt '/build/Playground.js' and path isnt '/build/App.js'
+					if path isnt '/build/App.js'
 
 						if /(Element )([-a-zA-Z0-9])*\n/.test(data)
 							doc.extends = data.match(/(Element )([-a-zA-Z0-9])*\n/)[0].replace('Element ', '')
@@ -607,13 +602,13 @@ buildProduction = (dir)->
 	folder = path.dirname(dir) + '/' + dirName
 	paths_to_remove = []
 
-	orbJSON = fs.readFileSync(folder + '/orb.json', 'utf8')
-	config = JSON.parse(orbJSON)
+	magixJSON = fs.readFileSync(folder + '/package.json', 'utf8')
+	config = JSON.parse(magixJSON)
 	if not config.name
-		console.log 'Orbe: [ERR] Invalid JSON project file, name missing.'.red
+		console.log 'MagiX: [ERR] Invalid JSON project file, name missing.'.red
 		return
 
-	prodFolder = folder + "/../orb-#{config.name}-production"
+	prodFolder = folder + "/../magix-#{config.name}-production"
 	
 	# Generate scriptID
 	scriptID = makeID()
@@ -622,7 +617,7 @@ buildProduction = (dir)->
 	# 	return console.error err if err
 
 	if not fs.existsSync(prodFolder)
-		console.log 'Orbe: Cloning working project..'.magenta
+		console.log 'MagiX: Cloning working project..'.magenta
 		fs.mkdirSync prodFolder
 
 	# Clean build
@@ -633,7 +628,7 @@ buildProduction = (dir)->
 	fs.copy folder, prodFolder, (err) ->
 		return console.error err if err
 
-		console.log ('Orbe: Production path: ' + prodFolder).green
+		console.log ('MagiX: Production path: ' + prodFolder).green
 		fs.writeFile prodFolder + '/build/index.js', Generate.indexJS(JSON.stringify('/build/' + scriptID + '.js')), (err) ->
 			return console.log(err) if err
 			minify()
@@ -654,7 +649,7 @@ buildProduction = (dir)->
 			# PUSH PATHS TO REMOVE LATER ON..
 			if stat.name.endsWith('.coffee') or stat.name.endsWith('.js') or stat.name.endsWith('.css')
 				name = name.replace('.coffee', '').replace('.js', '').replace('.css', '')
-				if name isnt 'Playground' or name isnt 'App'
+				if name isnt 'App'
 					paths_to_remove.push root+'/'+stat.name
 
 			# IF COFFEE, PREPARE FOR MINIFING
@@ -667,7 +662,7 @@ buildProduction = (dir)->
 					path = root.replace('documents', 'build') + '/' + stat.name.replace('coffee', 'js')
 
 					if data[0] isnt '!'
-						if path isnt prodFolder + '/build/Playground.js' and path isnt prodFolder + '/build/App.js'
+						if path isnt prodFolder + '/build/App.js'
 							files.push path
 							next()
 						else
@@ -685,15 +680,15 @@ buildProduction = (dir)->
 			files.push prodFolder + '/build/App.js'
 
 			# Minify files
-			uglified = '/* Made with Orbe (orbe.io) and a smile :) */ ' + uglify.minify(files).code
-			console.log 'Orbe: Minify script..'.magenta
+			uglified = '/* Made with MagiX (magixjs.com) and a smile :) */ ' + uglify.minify(files).code
+			console.log 'MagiX: Minify script..'.magenta
 
 			appPath = prodFolder + '/build/' + scriptID + '.js'
 			fs.writeFile appPath, uglified, (err) ->
 
-				console.log 'Orbe: Cleaning..'.magenta
+				console.log 'MagiX: Cleaning..'.magenta
 				cleaning ->
-					console.log "Orbe: Done: Orb built for production.".green
+					console.log "MagiX: Done: project built for production.".green
 			return
 
 	cleaning = (cb)->
@@ -725,7 +720,7 @@ buildProduction = (dir)->
 		    # we may have parent folder empty now
 		    files = fs.readdirSync(folder)
 		  if files.length == 0
-		    console.log ('Orbe: removing: '+folder).magenta
+		    console.log ('MagiX: removing: '+folder).magenta
 		    fs.rmdirSync folder
 		    return
 		  return
@@ -740,20 +735,26 @@ buildProduction = (dir)->
 # PROGRAMS
 
 program
-	.command('about')
-	.description('About Orbe.')
+	.command('about', {isDefault: yes})
+	.description('About magiX.')
 	.action about
 
 program
-	.command('create [type]')
-	.description('Allow you to create a project.')
+	.command('create [name]')
+	.description('Create a new project.')
 	.action create
 
 program
 	.command('launch [dir] [port]')
-	.description('Launch a local server to help you code an orb project.')
+	.description('Launch a local server to help you code an magix project.')
 	.action launch
-
+###
+# Maybe for later
+program
+	.command('forever [dir] [port]')
+	.description('Launch a local server that runs continuously.')
+	.action forever
+###
 program
 	.command('build [dir] [env]')
 	.description('Build a project.')
@@ -768,22 +769,9 @@ program
 	.command('watch [dir]')
 	.description('Observe change on a project and compile on the fly.')
 	.action watch
-
 # program
 # 	.command('install [name] [dir]')
 # 	.description('Add module to your project.')
 # 	.action install
 
 program.parse process.argv
-
-
-
-
-
-
-
-
-
-
-
-

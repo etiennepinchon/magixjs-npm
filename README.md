@@ -1,70 +1,68 @@
-# ORBE.IO
+# MAGIX.IO
 
 A NEW WAY TO CREATE ANYTHING.
 
-[orbe.io](https://orbe.io)
+[magixjs.com](http://magixjs.com)
 
 # Install
 
-> npm install orbe -g
+> npm install magix -g
 
 # Commands
 
-## orbe about
+## magix about
 
-* About Orbe.
+* About Magix.
 
-## orbe create [type]
+## magix create [type]
 
 * Allow you to create a project.
 * Type: [app, playground]
 
-ex: orbe create app
+ex: magix create app
 
-## orbe launch [dir] [port]
+## magix launch [dir] [port]
 
 * Launch a local server to help you code an orb project.
 
-## orbe build [project dir] [env]
+## magix build [project dir] [env]
 
 * Build your project.
-* orbe build production
+* magix build production
 ** Optimize your project for a production environement (merge files, minify..).
 
-## orbe clean [project dir]
+## magix clean [project dir]
 
 * Clear the build of a project.
 
-## orbe watch [project dir]
+## magix watch [project dir]
 
 * Observe change on a project and compile on the fly.
-* Note: when doing a 'orbe launch' you do not need to do an 'orbe watch'
+* Note: when doing a 'magix launch' you do not need to do an 'magix watch'
 
-ex: orbe watch
+ex: magix watch
 
 
 # Example
 
 ## Create your first project:
 
-> orbe create app
+> magix create demo
 
-> > Orbe: name:  demo
-
-> > Orbe: Orb created successfully.
+> > Magix: Project created successfully.
 
 > cd orb-demo
 
-> orbe launch
+> magix launch
 
 ## Create production version of your project
 ## (Will create copy of your project that will be minified and optimized)
 
-> orbe clean
+> magix clean
 
-> orbe build production
+> magix build production
 
-# Stuff to know about orbe projects
+# About magix projects
 
 * You code using COFFEESCRIPT.
 * No HTML, no CSS, no javascript required.
@@ -98,9 +96,9 @@ Then:
 
 To find help visit:
 
-[Orbe Documentation](https://orbe.io/learn)
+[Magix Documentation](https://magixjs.com/learn)
 
-[Twitter](https://twitter.com/orbeio)
+[Twitter](https://twitter.com/magixjs)
 
 # About
 Created by Etienne Pinchon (@etiennepinchon)

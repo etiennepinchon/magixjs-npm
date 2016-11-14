@@ -12,7 +12,7 @@ Generate.HTML = (name, description, keywords, app_icon) ->
 	if app_icon
 		html += '<link rel="icon" type="image/png" href="/documents/icon/' + app_icon + '.png">\n\t'
 	else
-		html += '<link rel="icon" type="image/png" href="https://data.orbe.io/default/favicon/icon.png">\n\t'
+		html += '<link rel="icon" type="image/png" href="https://magixjs.com/default/favicon/icon.png">\n\t'
 		
 	if description and description.length > 0
 		html += '<meta name="description" content="' + description + '">\n\t'
@@ -22,8 +22,8 @@ Generate.HTML = (name, description, keywords, app_icon) ->
 
 	html +='\n\t\
 		<!-- SCRIPT -->\n\t\
-		<script type="text/javascript" src="https://orbe.io/framework/1.0/orbe.loader.min.js"></script>\n\t\
-		<script type="text/javascript" src="/build/catalog.js"></script>\n\
+		<script type="text/javascript" src="https://magixjs.com/framework/1.0/magix.loader.min.js"></script>\n\t\
+		<script type="text/javascript" src="/build/catalog.js"></script>\n\t\
 		<script type="text/javascript" src="/build/index.js"></script>\n\
 	</head>\n\
 	<body>\n\
@@ -35,7 +35,7 @@ Generate.HTML = (name, description, keywords, app_icon) ->
 Generate.indexJS = (paths)->
 	paths = "'/build/App.js'" if not paths
 	return "window.__BUILD = #{JSON.stringify(new Date().getTime())};\n\
-	Orbe.load(#{paths});"
+	MagiX.load(#{paths});"
 
 Generate.catalog = (documents) ->
 
@@ -67,26 +67,10 @@ Generate.catalog = (documents) ->
 
 	return catalog
 
-	# documents = [] if not documents
-	
-	# assets_catalog = 'window.__CATALOG = {'
-	# for item of documents
-	# 	ext = documents[item].split('.').pop()
-	# 	assets_catalog += '"' + documents[item].replace(new RegExp('.' + ext + '$'), '') + '" : "' + ext + '"'
-	# 	if item < documents.length - 1
-	# 		assets_catalog += ','
-	# assets_catalog += '};'
-
-	# return assets_catalog
-
-
 Generate.JS = ->
 	return "\
-		// Import fonts\n\
-		Fonts({\n\t\
-			name: 'Open Sans',\n\t\
-			weight: '400,300'\n\
-		});\n\
+		// Import font\n\
+		Font('Quicksand', '400,300');\n\
 		\n\
 		// Create page\n\
 		App.page = new Page({\n\t\
@@ -94,102 +78,39 @@ Generate.JS = ->
 		})\n\
 		\n\
 		var hello = new Text({\n\t\
-			text: 'Hello',\n\t\
+			text: 'magiX',\n\t\
 			width: 300,\n\t\
 			fontSize: 90,\n\t\
 			fontWeight: 300,\n\t\
 			color: black,\n\t\
-			spacing: 4,\n\t\
-			parent: App.page\n\
+			spacing: 4\n\t\
 		});\n\
 		\n\
-		hello.center();\n"
+		hello.center();"
 
 # Generate CS for main App
 Generate.CS = ->
-	return "# Import fonts\n\
-	Fonts\n\t\
-		name: 'Open Sans'\n\t\
-		weight: '400,300'\n\
-	\n\
-	# Create page\n\
-	App.page = new Page\n\t\
-		backgroundColor: white\n\
-	\n\
-	hello = new Text\n\t\
-		text: 'Hello'\n\t\
-		width: 300\n\t\
-		fontSize: 90\n\t\
-		fontWeight: 300\n\t\
-		color: black\n\t\
-		spacing: 4\n\t\
-		parent: App.page\n\t\
-	\n\
-	hello.center()"
-
-
-# Generation for AppPlayground.js
-Generate.PlaygroundJS = (playground) ->
-	if not playground
-		playground = ""
-
-	return 'var Playground = new Page();\n\
-		App.page = Playground;\n\n\
-		' + playground + '\n'
-
-
-# Generate JS for playground
-Generate.PlaygroundContentJS = ->
-	return "// Import fonts\n\
-	Fonts({\n\t\
-		name: 'Open Sans',\n\t\
-		weight: '400,300'\n\
-	});\n\
-	\n\
-	var hello = new Text({\n\t\
-		text: 'Hello',\n\t\
-		width: 300,\n\t\
-		fontSize: 90,\n\t\
-		fontWeight: 300,\n\t\
-		color: black,\n\t\
-		spacing: 4,\n\t\
-		parent: Playground\n\
-	});\n\
-\n\
-	hello.center();"
-
-
-# Generate CS for playground
-Generate.PlaygroundContentCS = ->
-	return "# Import fonts\n\
-	Fonts\n\t\
-		name: 'Open Sans'\n\t\
-		weight: '400,300'\n\
-	\n\
-	hello = new Text\n\t\
-		text: 'Hello'\n\t\
-		width: 300\n\t\
-		fontSize: 90\n\t\
-		fontWeight: 300\n\t\
-		color: black\n\t\
-		spacing: 4\n\t\
-		parent: Playground\n\
-	\n\
-	hello.center()"
-
-module.exports = Generate
-
-# Generation for AppPlayground.js
-Generate.playgroundRunJS = (playground) ->
-	playground = '' if not playground
-	
-	return 'App.run(function() {\n\
-		' + playground + '\n\
-	});'
+	return "# Import font\n\
+		Font 'Quicksand', '400,300'\n\
+		\n\
+		# Create page\n\
+		App.page = new Page\n\t\
+			backgroundColor: white\n\
+		\n\
+		hello = new Text\n\t\
+			text: 'magiX'\n\t\
+			width: 300\n\t\
+			fontSize: 90\n\t\
+			fontWeight: 300\n\t\
+			color: black\n\t\
+			spacing: 4\n\t\
+		\n\
+		hello.center()\n"
 
 Generate.appRunJS = (app) ->
 	app = '' if not app
 	return 'App.run(function() {\n\
 		' + app + '\n\
-	});'
+	});\n'
 
+module.exports = Generate
