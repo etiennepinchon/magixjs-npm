@@ -1,6 +1,6 @@
 # MagiX
 
-In mystery lies beauty. 
+Beyond wonderland. 
 [magixjs](https://magixjs.com)
 
 MagiX allow you to create the most advance webapps ever built.
