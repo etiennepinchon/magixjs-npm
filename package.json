@@ -1,6 +1,6 @@
 {
   "name": "magixjs",
-  "version": "1.0.134",
+  "version": "1.0.136",
   "description": "Command-line manager for magixjs.com.",
   "main": "index.js",
   "bin": {
@@ -27,7 +27,7 @@
     "restify-cookies": "^0.2.2",
     "uglify-js": "^2.6.4",
     "walk": "^2.3.9",
-    "watch": "^0.19.1",
+    "watch": "^1.0.0",
     "mkdirp": "^0.5.1"
   },
   "repository": {

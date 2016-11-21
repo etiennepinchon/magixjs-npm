@@ -110,7 +110,7 @@ about = ->
 	console.log '                     Y8b d88P              	'
 	console.log '                      "Y88P"      				'
 	console.log 'MagiX | magixjs.com'.green
-	console.log 'Beyond wonderland.'.green
+	console.log 'Beyond magical.'.green
 	console.log 'Created by Etienne Pinchon (@etiennepinchon)'.green
 	console.log 'Copyright ©2016'.green
 	console.log '\n'
