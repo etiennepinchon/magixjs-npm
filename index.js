@@ -725,13 +725,7 @@ buildProduction = function(dir) {
               files.push(path);
               return next();
             } else {
-              uglified = uglify.minify([path]).code;
-              return fs.writeFile(path, uglified, 'utf8', function(err) {
-                if (err) {
-                  return console.log(err);
-                }
-                return next();
-              });
+              return next();
             }
           } else {
             uglified = uglify.minify([path]).code;

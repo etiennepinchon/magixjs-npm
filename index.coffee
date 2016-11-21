@@ -666,10 +666,7 @@ buildProduction = (dir)->
 							files.push path
 							next()
 						else
-							uglified = uglify.minify([path]).code
-							fs.writeFile path, uglified, 'utf8', (err) ->
-								return console.log(err) if err
-								next()
+							next()
 					else
 						uglified = uglify.minify([path]).code
 						fs.writeFile path, uglified, 'utf8', (err) ->
