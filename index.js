@@ -136,7 +136,7 @@ about = function() {
   console.log('                     Y8b d88P              	');
   console.log('                      "Y88P"      				');
   console.log('MagiX | magixjs.com'.green);
-  console.log('In mystery lies beauty.'.green);
+  console.log('Beyond wonderland.'.green);
   console.log('Created by Etienne Pinchon (@etiennepinchon)'.green);
   console.log('Copyright ©2016'.green);
   console.log('\n');
@@ -725,7 +725,13 @@ buildProduction = function(dir) {
               files.push(path);
               return next();
             } else {
-              return next();
+              uglified = uglify.minify([path]).code;
+              return fs.writeFile(path, uglified, 'utf8', function(err) {
+                if (err) {
+                  return console.log(err);
+                }
+                return next();
+              });
             }
           } else {
             uglified = uglify.minify([path]).code;
