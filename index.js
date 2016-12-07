@@ -562,7 +562,7 @@ compileFile = function(name, dir, next, notification) {
           notifier = require('node-notifier');
           path = require('path');
           return notifier.notify({
-            title: 'Magix | Error on ' + name,
+            title: 'MagiX | Error on ' + name,
             message: error,
             icon: path.join(__dirname, 'images/icon.png'),
             sound: false,
