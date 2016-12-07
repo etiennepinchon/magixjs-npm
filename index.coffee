@@ -139,16 +139,16 @@ create = (name) ->
 
 	done = ->
 		path = process.cwd() 
-		###
-		+ '/magix-' + name
+		
+		#+ '/magix-' + name
 		console.log 'MagiX: Project created successfully.'.green
 		console.log 'MagiX: Path: ' + path
-		console.log 'MagiX: Run -> cd ' + path
-		###
+		#console.log 'MagiX: Run -> cd ' + path
+		
 	createJSON = ->
 		packageFile = 
 			name: name
-			version: '0.0.0'
+			version: '0.1.0'
 			description: ''
 			tags: ''
 			created_at: new Date

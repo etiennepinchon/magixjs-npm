@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var CoffeeScript, CookieParser, Generate, about, build, buildAutoImport, buildProduction, capitalizeFirstLetter, clean, colors, compileFile, create, deleteFolderRecursive, dirCheck, fs, getDirectories, indent, launch, makeID, mkdirp, path, program, prompt, reorderFiles, restify, uglify, walk, watch, watcher;
 
 prompt = require('prompt');
@@ -158,20 +159,15 @@ create = function(name) {
   appJS = Generate.JS();
   appCS = Generate.CS();
   done = function() {
-    return path = process.cwd();
-
-    /*
-    		+ '/magix-' + name
-    		console.log 'MagiX: Project created successfully.'.green
-    		console.log 'MagiX: Path: ' + path
-    		console.log 'MagiX: Run -> cd ' + path
-     */
+    path = process.cwd();
+    console.log('MagiX: Project created successfully.'.green);
+    return console.log('MagiX: Path: ' + path);
   };
   createJSON = function() {
     var packageFile;
     packageFile = {
       name: name,
-      version: '0.0.0',
+      version: '0.1.0',
       description: '',
       tags: '',
       created_at: new Date
