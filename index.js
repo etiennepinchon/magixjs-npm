@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-var CoffeeScript, CookieParser, Generate, about, build, buildAutoImport, buildProduction, capitalizeFirstLetter, clean, colors, compileFile, create, deleteFolderRecursive, dirCheck, fs, getDirectories, indent, launch, makeID, mkdirp, path, program, prompt, reorderFiles, restify, uglify, walk, watch, watcher;
+var CoffeeScript, CookieParser, Generate, about, build, buildAutoImport, buildProduction, capitalizeFirstLetter, clean, colors, compileFile, create, deleteFolderRecursive, dirCheck, fs, getDirectories, indent, launch, makeID, mkdirp, openurl, path, program, prompt, reload, reloadServer, reorderFiles, restify, uglify, walk, watch, watcher;
+
+console.error = function() {};
 
 prompt = require('prompt');
 
@@ -27,7 +29,13 @@ CookieParser = require('restify-cookies');
 
 mkdirp = require('mkdirp');
 
+openurl = require('openurl');
+
+reload = require('reload');
+
 prompt.message = 'MagiX';
+
+reloadServer = void 0;
 
 Array.prototype.move = function(old_index, new_index) {
   var k;
@@ -155,13 +163,15 @@ create = function(name) {
     console.log('MagiX: [ERR] Name must be only letters, numbers, underscores, spaces or dashes.'.red);
     return;
   }
-  dir_project = '.';
+  dir_project = './' + name;
+  if (!fs.existsSync(dir_project)) {
+    fs.mkdirSync(dir_project);
+  }
   appJS = Generate.JS();
   appCS = Generate.CS();
   done = function() {
-    path = process.cwd();
-    console.log('MagiX: Project created successfully.'.green);
-    return console.log('MagiX: Path: ' + path);
+    process.chdir(dir_project);
+    return console.log('MagiX: Project created successfully.'.green);
   };
   createJSON = function() {
     var packageFile;
@@ -274,11 +284,15 @@ launch = function(dir, server_port) {
     fs.createReadStream(dir + '/index.html').pipe(res);
     return next();
   });
+  reloadServer = reload(server, server, false);
   server.__port = server_port;
   server.start = function(message) {
     return server.listen(server.__port, 'localhost', function() {
+      var url;
       if (message) {
-        return console.log(('MagiX: Project launched! Running! Address ' + server.url).green);
+        url = server.url.replace('127.0.0.1', 'localhost');
+        console.log(('MagiX: Project launched! Running! Address ' + url).green);
+        openurl.open(url);
       }
     });
   };
@@ -358,6 +372,9 @@ watch = function(dir, server) {
   console.log('MagiX: Now observing changes in your project..'.green);
   return watcher(dir + '/documents', function(filename) {
     var file_build, name;
+    if (reloadServer) {
+      reloadServer.reload();
+    }
     if (filename && filename.endsWith('.coffee')) {
       name = filename.split('/');
       name = name[name.length - 1];
@@ -546,9 +563,6 @@ compileFile = function(name, dir, next, notification) {
           convertedFinal = converted;
         }
         return fs.writeFile(filePathBuild, convertedFinal, function(err) {
-          if (err) {
-            console.log(err);
-          }
           console.log('MagiX: ↳ success'.green);
           if (next) {
             return next();

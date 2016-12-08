@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+console.error = ->
+
 ##############################################################
 # REQUIRE
 
@@ -16,11 +18,14 @@ uglify 		 = require('uglify-js')
 restify 	 = require('restify')
 CookieParser = require('restify-cookies')
 mkdirp 		 = require('mkdirp')
+openurl		 = require('openurl')
+reload 		 = require('reload')
 
 ##############################################################
 # CONFIG
 
 prompt.message = 'MagiX'
+reloadServer = undefined
 
 ##############################################################
 # HELPERS
@@ -129,21 +134,17 @@ create = (name) ->
 		console.log 'MagiX: [ERR] Name must be only letters, numbers, underscores, spaces or dashes.'.red
 		return
 
-	dir_project = '.'#/magix-' + name
-	#if not fs.existsSync(dir_project)
-	#    fs.mkdirSync(dir_project)
+	dir_project = './' + name
+	if not fs.existsSync(dir_project)
+	    fs.mkdirSync(dir_project)
 		
 	# Generate App content in both JS and CS
 	appJS = Generate.JS()
 	appCS = Generate.CS()
 
 	done = ->
-		path = process.cwd() 
-		
-		#+ '/magix-' + name
+		process.chdir(dir_project)
 		console.log 'MagiX: Project created successfully.'.green
-		console.log 'MagiX: Path: ' + path
-		#console.log 'MagiX: Run -> cd ' + path
 		
 	createJSON = ->
 		packageFile = 
@@ -242,11 +243,17 @@ launch = (dir, server_port)->
 		fs.createReadStream(dir + '/index.html').pipe res
 		next()
 
+	# Reload server
+	reloadServer = reload(server, server, no)
+
 	server.__port = server_port
 	server.start = (message)->
 		server.listen server.__port, 'localhost', ->
 			if message
-				console.log(('MagiX: Project launched! Running! Address ' + server.url).green)
+				url = server.url.replace('127.0.0.1', 'localhost')
+				console.log(('MagiX: Project launched! Running! Address ' + url).green)
+				openurl.open(url)
+			return
 	
 	server.start(yes)
 	if fs.existsSync(dir + '/documents')
@@ -312,6 +319,10 @@ watch = (dir, server) ->
 	console.log 'MagiX: Now observing changes in your project..'.green
 
 	watcher dir + '/documents', (filename) ->
+
+		# Fire server-side reload event
+		if reloadServer
+			reloadServer.reload()
 
 		# If file is coffeescript
 		if filename and filename.endsWith('.coffee')
@@ -498,7 +509,7 @@ compileFile = (name, dir, next, notification)->
 					convertedFinal = converted
 
 				fs.writeFile filePathBuild, convertedFinal, (err) ->
-					console.log err if err
+					#console.log err if err
 					console.log 'MagiX: ↳ success'.green
 					next() if next
 			else

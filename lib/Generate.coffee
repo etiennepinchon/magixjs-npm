@@ -12,7 +12,7 @@ Generate.HTML = (name, description, keywords, app_icon) ->
 	if app_icon
 		html += '<link rel="icon" type="image/png" href="/documents/icon/' + app_icon + '.png">\n\t'
 	else
-		html += '<link rel="icon" type="image/png" href="https://magixjs.com/default/favicon/icon.png">\n\t'
+		html += '<link rel="icon" type="image/png" href="//magixjs.com/documents/favicon/icon.png">\n\t'
 		
 	if description and description.length > 0
 		html += '<meta name="description" content="' + description + '">\n\t'
@@ -23,10 +23,20 @@ Generate.HTML = (name, description, keywords, app_icon) ->
 	html +='\n\t\
 		<!-- SCRIPT -->\n\t\
 		<script type="text/javascript" src="https://s3.amazonaws.com/data.magixjs.com/framework/1.0/magix.loader.min.js"></script>\n\t\
-		<script type="text/javascript" src="/build/catalog.js"></script>\n\t\
-		<script type="text/javascript" src="/build/index.js"></script>\n\
+		<script type="text/javascript">\n\t\t\
+			var paths = ["/build/catalog.js", "/build/index.js"];\n\t\t\
+			for (var i = 0; i < paths.length; i++) {\n\t\t\t\
+				var scr = document.createElement("script");\n\t\t\t\
+				scr.src = paths[i]+"?t=" + new Date().getTime();\n\t\t\t\
+				document.getElementsByTagName("head")[0].appendChild(scr);\n\t\t\
+			}\n\t\
+		</script>\n\
 	</head>\n\
-	<body>\n\
+	<body>\n\t\
+		<!-- LIVE RELOAD -->\n\t\
+		<script type="text/javascript">\n\t\t\
+			!function(){function k(){b&&console.log("Waiting for socket"),setTimeout(function(){d=new WebSocket(c),d.onopen=h,d.onclose=i,d.onmessage=g,d.onerror=j},250)}var d,b=!1,c=window.location.origin.replace(/^http(s?):\/\//,"ws$1://");if(b&&console.log("Reload Script Loaded"),!("WebSocket"in window))throw new Error("Reload only works with browsers that support WebSockets");var f,e=!1;window.addEventListener("load",function(){b===!0&&console.log("Page Loaded - Calling webSocketWaiter"),k()}),window.addEventListener("beforeunload",function(){b===!0&&console.log("Navigated away from the current URL"),f=!0});var g=function(a){"reload"===a.data&&d.close()},h=function(a){b&&console.log("Socket Opened"),e===!0&&f!==!0&&(b&&console.log("Reloaded"),e=!1,window.location.reload())},i=function(a){b&&console.log("Socket Closed - Calling webSocketWaiter"),e=!0,k()},j=function(a){b&&console.log(a)}}();\n\t\
+		</script>\n\
 	</body>\n\
 	</html>'
 
@@ -70,19 +80,19 @@ Generate.catalog = (documents) ->
 Generate.JS = ->
 	return "\
 		// Import font\n\
-		Font('Quicksand', '400,300');\n\
+		Font('Quicksand', '700,400,300');\n\
 		\n\
 		// Create page\n\
 		App.page = new Page({\n\t\
-			backgroundColor: white\n\
+			backgroundColor: '#6600FF'\n\
 		})\n\
 		\n\
 		var hello = new Text({\n\t\
-			text: 'magiX',\n\t\
-			width: 300,\n\t\
+			text: 'Hello!',\n\t\
+			width: auto,\n\t\
 			fontSize: 90,\n\t\
-			fontWeight: 300,\n\t\
-			color: black,\n\t\
+			fontWeight: 700,\n\t\
+			color: white,\n\t\
 			spacing: 4\n\t\
 		});\n\
 		\n\
@@ -91,18 +101,18 @@ Generate.JS = ->
 # Generate CS for main App
 Generate.CS = ->
 	return "# Import font\n\
-		Font 'Quicksand', '400,300'\n\
+		Font 'Quicksand', '700,400,300'\n\
 		\n\
 		# Create page\n\
 		App.page = new Page\n\t\
-			backgroundColor: white\n\
+			backgroundColor: '#6600FF'\n\
 		\n\
 		hello = new Text\n\t\
-			text: 'magiX'\n\t\
-			width: 300\n\t\
+			text: 'Hello!'\n\t\
+			width: auto\n\t\
 			fontSize: 90\n\t\
-			fontWeight: 300\n\t\
-			color: black\n\t\
+			fontWeight: 700\n\t\
+			color: white\n\t\
 			spacing: 4\n\t\
 		\n\
 		hello.center()\n"
