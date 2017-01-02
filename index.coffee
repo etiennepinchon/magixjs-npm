@@ -201,7 +201,25 @@ create = (name) ->
 		return
 	return
 
-launch = (dir, server_port)->
+launch = (dir, server_port, env)->
+
+	######################################################
+	# PROD CHECK
+
+	prod = ['production', 'prod', 'p']
+	isProd = no
+
+	if not env
+		if prod.indexOf(dir) > -1
+			isProd = yes
+			dir = undefined
+		else if prod.indexOf(server_port) > -1
+			isProd = yes
+			server_port = undefined
+	else
+		isProd = yes if prod.indexOf(env) > -1
+		
+	######################################################
 
 	if not dir
 		dir = undefined
@@ -244,20 +262,26 @@ launch = (dir, server_port)->
 		next()
 
 	# Reload server
-	reloadServer = reload(server, server, no)
+	if not isProd
+		reloadServer = reload(server, server, no)
 
 	server.__port = server_port
 	server.start = (message)->
 		server.listen server.__port, 'localhost', ->
 			if message
 				url = server.url.replace('127.0.0.1', 'localhost')
-				console.log(('MagiX: Project launched! Running! Address ' + url).green)
-				openurl.open(url)
+				
+				if not isProd
+					console.log(('MagiX: Project launched! Running! Address ' + url).green)
+					openurl.open(url)
+				else
+					console.log(('MagiX: Project launched in Production mode! Running! Address ' + url).green)
 			return
 	
 	server.start(yes)
-	if fs.existsSync(dir + '/documents')
-		watch(dir, server)
+	if not isProd
+		if fs.existsSync(dir + '/documents')
+			watch(dir, server)
 
 build = (dir, env) ->
 	prod = ['production', 'prod', 'p']
@@ -756,15 +780,20 @@ program
 	.action create
 
 program
-	.command('launch [dir] [port]')
+	.command('launch [dir] [port] [env]')
 	.description('Launch a local server to help you code an magix project.')
 	.action launch
-###
+
 # Maybe for later
+###
 program
-	.command('forever [dir] [port]')
+	.command('forever start [dir] [port]')
 	.description('Launch a local server that runs continuously.')
-	.action forever
+	.action foreverStart
+program
+	.command('forever stop [dir] [port]')
+	.description('Launch a local server that runs continuously.')
+	.action foreverStop
 ###
 program
 	.command('build [dir] [env]')
@@ -780,6 +809,7 @@ program
 	.command('watch [dir]')
 	.description('Observe change on a project and compile on the fly.')
 	.action watch
+
 # program
 # 	.command('install [name] [dir]')
 # 	.description('Add module to your project.')

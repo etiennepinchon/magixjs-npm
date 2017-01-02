@@ -241,8 +241,23 @@ create = function(name) {
   });
 };
 
-launch = function(dir, server_port) {
-  var i, server;
+launch = function(dir, server_port, env) {
+  var i, isProd, prod, server;
+  prod = ['production', 'prod', 'p'];
+  isProd = false;
+  if (!env) {
+    if (prod.indexOf(dir) > -1) {
+      isProd = true;
+      dir = void 0;
+    } else if (prod.indexOf(server_port) > -1) {
+      isProd = true;
+      server_port = void 0;
+    }
+  } else {
+    if (prod.indexOf(env) > -1) {
+      isProd = true;
+    }
+  }
   if (!dir) {
     dir = void 0;
   }
@@ -284,21 +299,29 @@ launch = function(dir, server_port) {
     fs.createReadStream(dir + '/index.html').pipe(res);
     return next();
   });
-  reloadServer = reload(server, server, false);
+  if (!isProd) {
+    reloadServer = reload(server, server, false);
+  }
   server.__port = server_port;
   server.start = function(message) {
     return server.listen(server.__port, 'localhost', function() {
       var url;
       if (message) {
         url = server.url.replace('127.0.0.1', 'localhost');
-        console.log(('MagiX: Project launched! Running! Address ' + url).green);
-        openurl.open(url);
+        if (!isProd) {
+          console.log(('MagiX: Project launched! Running! Address ' + url).green);
+          openurl.open(url);
+        } else {
+          console.log(('MagiX: Project launched in Production mode! Running! Address ' + url).green);
+        }
       }
     });
   };
   server.start(true);
-  if (fs.existsSync(dir + '/documents')) {
-    return watch(dir, server);
+  if (!isProd) {
+    if (fs.existsSync(dir + '/documents')) {
+      return watch(dir, server);
+    }
   }
 };
 
@@ -815,15 +838,18 @@ program.command('about', {
 
 program.command('create [name]').description('Create a new project.').action(create);
 
-program.command('launch [dir] [port]').description('Launch a local server to help you code an magix project.').action(launch);
+program.command('launch [dir] [port] [env]').description('Launch a local server to help you code an magix project.').action(launch);
 
 
 /*
- * Maybe for later
 program
-	.command('forever [dir] [port]')
+	.command('forever start [dir] [port]')
 	.description('Launch a local server that runs continuously.')
-	.action forever
+	.action foreverStart
+program
+	.command('forever stop [dir] [port]')
+	.description('Launch a local server that runs continuously.')
+	.action foreverStop
  */
 
 program.command('build [dir] [env]').description('Build a project.').action(build);
